@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -56,9 +57,9 @@ namespace workspacer.Background
             Height = monitor.Height;
         }
 
-        private void InitTimer(int interval)
+        private void InitTimer(TimeSpan interval)
         {
-            _intervalTimer = new System.Threading.Timer(new TimerCallback(IntervalTriggerd), null, 0, interval);
+            _intervalTimer = new System.Threading.Timer(new TimerCallback(IntervalTriggerd), null, 0, (long)interval.TotalMilliseconds);
         }
 
         private void IntervalTriggerd(object state)

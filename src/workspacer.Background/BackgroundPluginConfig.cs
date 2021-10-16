@@ -1,4 +1,6 @@
-﻿namespace workspacer.Background
+﻿using System;
+
+namespace workspacer.Background
 {
     public interface IBackgroundPluginConfig
     {
@@ -30,12 +32,12 @@
     public class MultiBackgroundPluginConfig : BackgroundPluginConfig
     {
         private BackgroundItem[] _backgrounds;
-        private int _interval = 0;
-        public int Interval { get { return _interval; } }
+        private TimeSpan _interval = new TimeSpan(0, 0, 1);
+        public TimeSpan Interval { get { return _interval; } }
 
         private int _currentIndex = 0;
 
-        public MultiBackgroundPluginConfig(BackgroundItem[] backgrounds, int interval, IMonitor monitor = null) : base(monitor)
+        public MultiBackgroundPluginConfig(BackgroundItem[] backgrounds, TimeSpan interval, IMonitor monitor = null) : base(monitor)
         {
             _interval = interval;
             _backgrounds = backgrounds;
