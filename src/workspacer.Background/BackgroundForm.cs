@@ -51,7 +51,7 @@ namespace workspacer.Background
             FormBorderStyle = FormBorderStyle.None;
             ControlBox = false;
 
-            Location = new Point(0, 0);
+            Location = new Point(monitor.X, monitor.Y);
             Width = monitor.Width;
             Height = monitor.Height;
         }
