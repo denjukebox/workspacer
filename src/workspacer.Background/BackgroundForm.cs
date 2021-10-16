@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -10,7 +11,7 @@ namespace workspacer.Background
 
         private System.Threading.Timer _intervalTimer;
 
-        private IBackgroundPluginConfig _config;
+        private IBackgroundPluginConfig _config;        
 
         public BackgroundForm(IBackgroundPluginConfig config)
         {
@@ -22,6 +23,24 @@ namespace workspacer.Background
             // force handle get so that the window handle is created
             var handle = Handle;
             Logger.Debug("Background[{0}] - handle created", handle);
+        }
+
+        public void ShowBackground()
+        {
+            Invoke((MethodInvoker)(() =>
+            {
+                Show();
+                SendToBack();
+
+                if (_config is MultiBackgroundPluginConfig)
+                {
+                    InitTimer(((MultiBackgroundPluginConfig)_config).Interval);
+                }
+                else
+                {
+                    Refresh();
+                }
+            }));
         }
 
         private void ConfigureControl(IMonitor monitor)
@@ -44,45 +63,46 @@ namespace workspacer.Background
 
         private void IntervalTriggerd(object state)
         {
-            this.Invoke((MethodInvoker)(() =>
+            Invoke((MethodInvoker)(() =>
             {
                 Refresh();
             }));
         }
 
-        private void PaintContent(PaintEventArgs e)
+        private void ProcessContent(PaintEventArgs e)
         {
-            if (_config is SolidColorBackgroundPluginConfig)
-            {
-                var colorConfig = _config as SolidColorBackgroundPluginConfig;
-                e.Graphics.Clear(System.Drawing.Color.FromArgb(1, colorConfig.Background.R, colorConfig.Background.G, colorConfig.Background.B));
-            }
+            BackgroundItem item = null;
             if (_config is SingleBackgroundPluginConfig)
             {
                 var bgConfig = _config as SingleBackgroundPluginConfig;
-                if (bgConfig.Background.Type == BackgroundContentType.Image)
-                {
-                    e.Graphics.DrawImage(Image.FromFile(bgConfig.Background.Content.AbsolutePath), 0, 0, _config.AssignedMonitor.Width, _config.AssignedMonitor.Height);
-                }
+                item = bgConfig.Background;
             }
             if (_config is MultiBackgroundPluginConfig)
             {
                 var bgImageConfig = _config as MultiBackgroundPluginConfig;
-                e.Graphics.DrawImage(Image.FromFile(bgImageConfig.GetNext().Content.AbsolutePath), 0, 0, _config.AssignedMonitor.Width, _config.AssignedMonitor.Height);
+                item = bgImageConfig.GetNext();
             }
+
+            PaintContent(e, item, _config.AssignedMonitor);
         }
 
-        public void ShowBackground()
+        private void PaintContent(PaintEventArgs e, BackgroundItem item, IMonitor monitor)
         {
-            this.Invoke((MethodInvoker)(() =>
+            if(item == null)
             {
-                this.Show();
-                this.SendToBack();
-                if (_config is MultiBackgroundPluginConfig)
-                {
-                    InitTimer(((MultiBackgroundPluginConfig)_config).Interval);
-                }
-            }));
+                return;
+            }
+
+            if(item.Type == BackgroundContentType.Color)
+            {
+                var parts = item.Content.Split(';').Select(x => int.Parse(x));
+                var color = System.Drawing.Color.FromArgb(1, parts.ElementAt(0), parts.ElementAt(1), parts.ElementAt(2));
+                e.Graphics.FillRectangle(new SolidBrush(color), 0, 0, monitor.Width, monitor.Height);
+            }
+            if(item.Type == BackgroundContentType.Image)
+            {
+                e.Graphics.DrawImage(Image.FromFile(item.Content), 0, 0, monitor.Width, monitor.Height);
+            }
         }
 
         protected override CreateParams CreateParams
@@ -103,7 +123,7 @@ namespace workspacer.Background
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            PaintContent(e);
+            ProcessContent(e);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e) { /* Ignore */ }

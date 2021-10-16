@@ -5,20 +5,26 @@ namespace workspacer.Background
     public class BackgroundItem
     {
         public BackgroundContentType Type { get { return _type; } }
-        public Uri Content { get { return _content; } }
+        public string Content { get { return _content; } }
         private BackgroundContentType _type { get; set; }
-        private Uri _content { get; set; }
+        private string _content { get; set; }
 
-        public BackgroundItem(BackgroundContentType type, Uri content)
+        public BackgroundItem(BackgroundContentType type, string content)
         {
             _type = type;
             _content = content;
+        }
+
+        public BackgroundItem(BackgroundContentType type, Color content)
+        {
+            _type = type;
+            _content = content.ToString();
         }
     }
 
     public enum BackgroundContentType
     {
         Image,
-        Video
+        Color
     }
 }

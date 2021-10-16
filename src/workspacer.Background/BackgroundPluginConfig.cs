@@ -16,17 +16,6 @@
         }        
     }
 
-    public class SolidColorBackgroundPluginConfig : BackgroundPluginConfig
-    {
-        private Color _background;
-        public Color Background { get { return _background; } }
-
-        public SolidColorBackgroundPluginConfig(Color color, IMonitor monitor = null) : base(monitor)
-        {
-            _background = color;
-        }
-    }
-
     public class SingleBackgroundPluginConfig : BackgroundPluginConfig
     {
         private BackgroundItem _background;

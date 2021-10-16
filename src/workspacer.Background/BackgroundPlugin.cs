@@ -7,7 +7,7 @@
 
         private BackgroundForm _form;
 
-        public BackgroundPlugin() : this(new SolidColorBackgroundPluginConfig(Color.Gray)) { }
+        public BackgroundPlugin() : this(new SingleBackgroundPluginConfig(new BackgroundItem(BackgroundContentType.Color, Color.Gray.ToString()))) { }
 
         public BackgroundPlugin(IBackgroundPluginConfig config)
         {
