@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -70,9 +71,18 @@ namespace workspacer.Background
             var folderItems = config.Backgrounds.Where(x => x.Type == BackgroundContentType.Folder).ToList();
             foreach (var folderItem in folderItems)
             {
-                var images = Directory.GetFiles(folderItem.Content, "*.*", SearchOption.TopDirectoryOnly)
-                    .Where(f => _extensions.Contains(Path.GetExtension(f).ToLower()))
-                    .Select(f => new BackgroundItem(BackgroundContentType.Image, f)).ToList();
+                IEnumerable<BackgroundItem> images = new List<BackgroundItem>();
+
+                try
+                {
+                    images = Directory.GetFiles(folderItem.Content, "*.*", SearchOption.TopDirectoryOnly)
+                        .Where(f => _extensions.Contains(Path.GetExtension(f).ToLower()))
+                        .Select(f => new BackgroundItem(BackgroundContentType.Image, f));
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Failed to get images from {folderItem.Content}: {ex}");
+                }
 
                 var originalIndex = config.Backgrounds.IndexOf(folderItem);
                 config.Backgrounds.RemoveAt(originalIndex);
@@ -115,12 +125,29 @@ namespace workspacer.Background
             if(item.Type == BackgroundContentType.Color)
             {
                 var parts = item.Content.Split(';').Select(x => int.Parse(x));
+                if(parts.Count() != 3)
+                {
+                    return;
+                }
+
                 var color = System.Drawing.Color.FromArgb(1, parts.ElementAt(0), parts.ElementAt(1), parts.ElementAt(2));
-                e.Graphics.FillRectangle(new SolidBrush(color), 0, 0, monitor.Width, monitor.Height);
+                e.Graphics.FillRectangle(new SolidBrush(color), _config.AssignedMonitor.X, _config.AssignedMonitor.Y, monitor.Width, monitor.Height);
             }
             if(item.Type == BackgroundContentType.Image)
             {
-                e.Graphics.DrawImage(Image.FromFile(item.Content), 0, 0, monitor.Width, monitor.Height);
+                Image image = null;
+
+                try
+                {
+                    image = Image.FromFile(item.Content);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn($"Failed to load image {item.Content}: {ex}");
+                    return;
+                }
+
+                e.Graphics.DrawImage(image, _config.AssignedMonitor.X, _config.AssignedMonitor.Y, monitor.Width, monitor.Height);
             }
         }
 

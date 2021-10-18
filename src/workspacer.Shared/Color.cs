@@ -36,11 +36,6 @@ namespace workspacer
             }
         }
 
-        public override string ToString()
-        {
-            return $"{G};{R};{B}";
-        }
-
         public static readonly Color White =     new Color(0xFF, 0xFF, 0xFF);
         public static readonly Color Silver =    new Color(0xC0, 0xC0, 0xC0);
         public static readonly Color Gray =      new Color(0x80, 0x80, 0x80);

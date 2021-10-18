@@ -9,16 +9,16 @@ namespace workspacer.Background
         private BackgroundContentType _type { get; set; }
         private string _content { get; set; }
 
-        public BackgroundItem(BackgroundContentType type, string content)
+        public BackgroundItem(BackgroundContentType type, string path)
         {
             _type = type;
-            _content = content;
+            _content = path;
         }
 
         public BackgroundItem(BackgroundContentType type, Color content)
         {
             _type = type;
-            _content = content.ToString();
+            _content = $"{content.R};{content.G};{content.B}";
         }
     }
 
