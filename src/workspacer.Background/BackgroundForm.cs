@@ -130,7 +130,7 @@ namespace workspacer.Background
                     return;
                 }
 
-                var color = System.Drawing.Color.FromArgb(1, parts.ElementAt(0), parts.ElementAt(1), parts.ElementAt(2));
+                var color = System.Drawing.Color.FromArgb(255, parts.ElementAt(0), parts.ElementAt(1), parts.ElementAt(2));
                 e.Graphics.FillRectangle(new SolidBrush(color), _config.AssignedMonitor.X, _config.AssignedMonitor.Y, monitor.Width, monitor.Height);
             }
             if(item.Type == BackgroundContentType.Image)
