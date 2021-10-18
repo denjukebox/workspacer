@@ -25,6 +25,7 @@ namespace workspacer.Background
     public enum BackgroundContentType
     {
         Image,
+        Folder,
         Color
     }
 }

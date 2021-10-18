@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -11,8 +12,9 @@ namespace workspacer.Background
         private static Logger Logger = Logger.Create();
 
         private System.Threading.Timer _intervalTimer;
-
-        private IBackgroundPluginConfig _config;        
+        private IBackgroundPluginConfig _config;    
+        
+        private readonly string[] _extensions = { ".jpg", ".png" };
 
         public BackgroundForm(IBackgroundPluginConfig config)
         {
@@ -35,12 +37,13 @@ namespace workspacer.Background
 
                 if (_config is MultiBackgroundPluginConfig)
                 {
-                    InitTimer(((MultiBackgroundPluginConfig)_config).Interval);
+                    var multiConfig = _config as MultiBackgroundPluginConfig;
+                    PreProcessBackgroundFolders(multiConfig);
+                    InitTimer(multiConfig.Interval);
+                    return;
                 }
-                else
-                {
-                    Refresh();
-                }
+
+                UpdateTrigger(null);
             }));
         }
 
@@ -59,10 +62,25 @@ namespace workspacer.Background
 
         private void InitTimer(TimeSpan interval)
         {
-            _intervalTimer = new System.Threading.Timer(new TimerCallback(IntervalTriggerd), null, 0, (long)interval.TotalMilliseconds);
+            _intervalTimer = new System.Threading.Timer(new TimerCallback(UpdateTrigger), null, 0, (long)interval.TotalMilliseconds);
         }
 
-        private void IntervalTriggerd(object state)
+        private void PreProcessBackgroundFolders(MultiBackgroundPluginConfig config)
+        {
+            var folderItems = config.Backgrounds.Where(x => x.Type == BackgroundContentType.Folder).ToList();
+            foreach (var folderItem in folderItems)
+            {
+                var images = Directory.GetFiles(folderItem.Content, "*.*", SearchOption.TopDirectoryOnly)
+                    .Where(f => _extensions.Contains(Path.GetExtension(f).ToLower()))
+                    .Select(f => new BackgroundItem(BackgroundContentType.Image, f)).ToList();
+
+                var originalIndex = config.Backgrounds.IndexOf(folderItem);
+                config.Backgrounds.RemoveAt(originalIndex);
+                config.Backgrounds.InsertRange(originalIndex, images);
+            }
+        }
+
+        private void UpdateTrigger(object state)
         {
             Invoke((MethodInvoker)(() =>
             {

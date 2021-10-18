@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace workspacer.Background
 {
@@ -20,32 +22,30 @@ namespace workspacer.Background
 
     public class SingleBackgroundPluginConfig : BackgroundPluginConfig
     {
-        private BackgroundItem _background;
-        public BackgroundItem Background { get { return _background; } }
+        public BackgroundItem Background { get; set; }
 
         public SingleBackgroundPluginConfig(BackgroundItem background, IMonitor monitor = null) : base(monitor)
         {
-            _background = background;
+            Background = background;
         }
     }
 
     public class MultiBackgroundPluginConfig : BackgroundPluginConfig
     {
-        private BackgroundItem[] _backgrounds;
-        private TimeSpan _interval = new TimeSpan(0, 0, 1);
-        public TimeSpan Interval { get { return _interval; } }
+        public List<BackgroundItem> Backgrounds { get; set; }
+        public TimeSpan Interval { get; set; }
 
         private int _currentIndex = 0;
 
-        public MultiBackgroundPluginConfig(BackgroundItem[] backgrounds, TimeSpan interval, IMonitor monitor = null) : base(monitor)
+        public MultiBackgroundPluginConfig(IEnumerable<BackgroundItem> backgrounds, TimeSpan interval, IMonitor monitor = null) : base(monitor)
         {
-            _interval = interval;
-            _backgrounds = backgrounds;
+            Interval = interval;
+            Backgrounds = backgrounds.ToList();
         }
 
         public BackgroundItem GetNext()
         {
-            if (_currentIndex == _backgrounds.Length - 1)
+            if (_currentIndex == Backgrounds.Count() - 1)
             {
                 _currentIndex = 0;
             }
@@ -54,7 +54,7 @@ namespace workspacer.Background
                 _currentIndex++;
             }
 
-            return _backgrounds[_currentIndex];
+            return Backgrounds.ElementAt(_currentIndex);
         }
     }
 }
