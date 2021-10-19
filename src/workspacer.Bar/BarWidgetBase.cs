@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace workspacer.Bar
 {
@@ -12,6 +10,7 @@ namespace workspacer.Bar
         public string FontName { get; set; } = null;
         public string LeftPadding { get; set; } = "";
         public string RightPadding { get; set; } = "";
+        public Dictionary<string, Color> Colors { get; set; }
 
         public void Initialize(IBarWidgetContext context)
         {
@@ -42,8 +41,8 @@ namespace workspacer.Bar
             return new BarWidgetPart()
             {
                 Text = text,
-                ForegroundColor = fore,
-                BackgroundColor = back,
+                ForegroundColor = fore ?? Colors.GetForgroundColorFromDesign(),
+                BackgroundColor = back ?? Colors.GetBackgroundColorFromDesign(),
                 PartClicked = partClicked,
                 FontName = fontname,
                 LeftPadding = leftPadding,

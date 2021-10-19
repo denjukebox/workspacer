@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace workspacer.Bar.Widgets
 {
+    public static class TitleWidgetDesign
+    {
+        public const string MONITORHASFOCUSCOLOR_KEY = "workspacer.Bar.Widgets.TitleWidget.MonitorHasFocusColor";
+    }
+
     public class TitleWidget : BarWidgetBase
     {
-        public Color MonitorHasFocusColor { get; set; } = Color.Yellow;
         public bool IsShortTitle { get; set; } = false;
         public string NoWindowMessage { get; set; } = "No Windows";
 
@@ -18,7 +22,7 @@ namespace workspacer.Bar.Widgets
             var window = GetWindow();
             var isFocusedMonitor = Context.MonitorContainer.FocusedMonitor == Context.Monitor;
             var multipleMonitors = Context.MonitorContainer.NumMonitors > 1;
-            var color = isFocusedMonitor && multipleMonitors ? MonitorHasFocusColor : null;
+            var color = isFocusedMonitor && multipleMonitors ? Colors.GetColorFromDesign(TitleWidgetDesign.MONITORHASFOCUSCOLOR_KEY) : null;
 
             if (window != null)
             {

@@ -1,18 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Forms;
 
 namespace workspacer.Bar.Widgets
 {
+    public class BatteryWidgetDesign
+    {
+        public const string LOWCHARGECOLOR_KEY = "workspacer.Bar.Widgets.BatteryWidget.LowChargeColor";
+        public const string MEDCHARGECOLOR_KEY = "workspacer.Bar.Widgets.BatteryWidget.MedChargeColor";
+        public const string HIGHCHARGECOLOR_KEY = "workspacer.Bar.Widgets.BatteryWidget.HighChargeColor";
+    }
+
     public class BatteryWidget : BarWidgetBase
     {
-        public Color LowChargeColor { get; set; } = Color.Red;
-        public Color MedChargeColor { get; set; } = Color.Yellow;
-        public Color HighChargeColor { get; set; } = Color.Green;
+        private Color _lowChargeColorDefault = Color.Red;
+        private Color _medChargeColor = Color.Yellow;
+        private Color _highChargeColor = Color.Green;
+
         public bool HasBatteryWarning { get; set; } = true;
         public double LowChargeThreshold { get; set; } = 0.10;
         public double MedChargeThreshold { get; set; } = 0.50;
@@ -30,15 +32,15 @@ namespace workspacer.Bar.Widgets
             {
                 if (currentBatteryCharge <= LowChargeThreshold)
                 {
-                    return Parts(Part(currentBatteryCharge.ToString("#0%"), LowChargeColor, fontname: FontName));
+                    return Parts(Part(currentBatteryCharge.ToString("#0%"), Colors.GetColorFromDesign(BatteryWidgetDesign.LOWCHARGECOLOR_KEY, _lowChargeColorDefault), fontname: FontName));
                 }
                 else if (currentBatteryCharge <= MedChargeThreshold)
                 {
-                    return Parts(Part(currentBatteryCharge.ToString("#0%"), MedChargeColor, fontname: FontName));
+                    return Parts(Part(currentBatteryCharge.ToString("#0%"), Colors.GetColorFromDesign(BatteryWidgetDesign.MEDCHARGECOLOR_KEY, _medChargeColor), fontname: FontName));
                 }
                 else
                 {
-                    return Parts(Part(currentBatteryCharge.ToString("#0%"), HighChargeColor, fontname: FontName));
+                    return Parts(Part(currentBatteryCharge.ToString("#0%"), Colors.GetColorFromDesign(BatteryWidgetDesign.HIGHCHARGECOLOR_KEY, _highChargeColor), fontname: FontName));
                 }
             }
             else

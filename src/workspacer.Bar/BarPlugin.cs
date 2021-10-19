@@ -41,8 +41,6 @@ namespace workspacer.Bar
                     bars.Add(bar);
                 }
             }
-
-            
         }
 
         public void AfterConfig(IConfigContext context)

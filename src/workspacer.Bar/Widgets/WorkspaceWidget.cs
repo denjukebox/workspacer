@@ -8,11 +8,23 @@ using System.Timers;
 
 namespace workspacer.Bar.Widgets
 {
+    public static class WorkspaceWidgetDesign
+    {
+        public const string WORKSPACEHASFOCUSCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceHasFocusColor";
+        public const string WORKSPACEEMPTYCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceEmptyColor";
+        public const string WORKSPACEFILLEDCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceFilledColor";
+
+        public const string WORKSPACEINDICATINGBACKCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceIndicatingBackColor";
+        public const string WORKSPACEBACKCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceBackColor";
+    }
+
     public class WorkspaceWidget : BarWidgetBase
     {
-        public Color WorkspaceHasFocusColor { get; set; } = Color.Red;
-        public Color WorkspaceEmptyColor { get; set; } = Color.Gray;
-        public Color WorkspaceIndicatingBackColor { get; set; } = Color.Teal;
+        private Color _workspaceHasFocusColor = Color.Red;
+        private Color _workspaceEmptyColor = Color.Gray;
+        private Color _workspaceFilledColor = Color.White;
+        private Color _workspaceIndicatingBackColor = Color.Teal;
+
         public int BlinkPeriod { get; set; } = 1000;
 
         private Timer _blinkTimer;
@@ -66,7 +78,8 @@ namespace workspacer.Bar.Widgets
 
         private IBarWidgetPart CreatePart(IWorkspace workspace, int index)
         {
-            var backColor = WorkspaceIsIndicating(workspace) ? WorkspaceIndicatingBackColor : null;
+            var backColor = WorkspaceIsIndicating(workspace) ? 
+                Colors.GetColorFromDesign(WorkspaceWidgetDesign.WORKSPACEINDICATINGBACKCOLOR_KEY, _workspaceIndicatingBackColor) : null;
 
             return Part(GetDisplayName(workspace, index), GetDisplayColor(workspace, index), backColor, () =>
             {
@@ -93,11 +106,13 @@ namespace workspacer.Bar.Widgets
             var monitor = Context.WorkspaceContainer.GetCurrentMonitorForWorkspace(workspace);
             if (Context.Monitor == monitor)
             {
-                return WorkspaceHasFocusColor;
+                return Colors.GetColorFromDesign(WorkspaceWidgetDesign.WORKSPACEHASFOCUSCOLOR_KEY, _workspaceHasFocusColor) ;
             }
 
             var hasWindows = workspace.ManagedWindows.Count != 0;
-            return hasWindows ? null : WorkspaceEmptyColor;
+            return hasWindows ?
+                Colors.GetColorFromDesign(WorkspaceWidgetDesign.WORKSPACEFILLEDCOLOR_KEY, _workspaceFilledColor) :
+                Colors.GetColorFromDesign(WorkspaceWidgetDesign.WORKSPACEEMPTYCOLOR_KEY, _workspaceEmptyColor);
         }
 
         private void BlinkIndicatingWorkspaces()

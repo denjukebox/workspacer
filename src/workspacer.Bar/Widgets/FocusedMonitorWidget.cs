@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace workspacer.Bar.Widgets
+﻿namespace workspacer.Bar.Widgets
 {
     public class FocusedMonitorWidget : BarWidgetBase
     {
-       
-
         public string FocusedText { get; set; } = "**********";
         public string UnfocusedText { get; set; } = "";
 
