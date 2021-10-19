@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace workspacer.Bar.Widgets
 {
-    public static class TitleWidgetDesign
+    public static class TitleWidgetResources
     {
-        public const string MONITORHASFOCUSCOLOR_KEY = "workspacer.Bar.Widgets.TitleWidget.MonitorHasFocusColor";
+        public const string MonitorHasFocusColorKey = "workspacer.Bar.Widgets.TitleWidget.MonitorHasFocusColor";
+        internal static readonly Color MonitorHasFocusColorDefault = Color.Yellow;
     }
 
     public class TitleWidget : BarWidgetBase
@@ -16,13 +14,12 @@ namespace workspacer.Bar.Widgets
         public bool IsShortTitle { get; set; } = false;
         public string NoWindowMessage { get; set; } = "No Windows";
 
-
         public override IBarWidgetPart[] GetParts()
         {
             var window = GetWindow();
             var isFocusedMonitor = Context.MonitorContainer.FocusedMonitor == Context.Monitor;
             var multipleMonitors = Context.MonitorContainer.NumMonitors > 1;
-            var color = isFocusedMonitor && multipleMonitors ? Colors.GetColorFromDesign(TitleWidgetDesign.MONITORHASFOCUSCOLOR_KEY) : null;
+            var color = isFocusedMonitor && multipleMonitors ? Colors.GetColorByKey(TitleWidgetResources.MonitorHasFocusColorKey, TitleWidgetResources.MonitorHasFocusColorDefault) : null;
 
             if (window != null)
             {

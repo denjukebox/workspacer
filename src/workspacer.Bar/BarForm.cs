@@ -20,10 +20,6 @@ namespace workspacer.Bar
         private BarSection _left;
         private BarSection _right;
 
-        private Color _widgetForegroundDefault = Color.White;
-        private Color _widgetBackgroundDefault = Color.Black;
-        private Color _backgroundDefault = Color.Black;
-
         public BarForm(IMonitor monitor, BarPluginConfig config)
         {
             _monitor = monitor;
@@ -35,7 +31,7 @@ namespace workspacer.Bar
             this.ControlBox = false;
             this.FormBorderStyle = FormBorderStyle.None;
 
-            this.BackColor = ColorToColor(config.Colors.GetColorFromDesign(BarDesign.BACKGROUND_FILL_KEY, _widgetBackgroundDefault));
+            this.BackColor = ColorToColor(config.Colors.GetColorByKey(BarResources.BackgroundFillColorKey, BarResources.BackgroundFillColorDefault));
 
             this.Load += OnLoad;
 
@@ -56,9 +52,9 @@ namespace workspacer.Bar
         public void Initialize(IBarWidget[] left, IBarWidget[] right, IConfigContext context)
         {
             _left = new BarSection(false, leftPanel, left, _monitor, context,
-                _config.Colors.GetForgroundColorFromDesign(_widgetForegroundDefault), _config.Colors.GetBackgroundColorFromDesign(_widgetBackgroundDefault), _config.FontName, _config.FontSize);
+                _config.Colors.GetForgroundColor(DesignResources.ForegroundColorDefault), _config.Colors.GetBackgroundColor(DesignResources.BackgroundColorDefault), _config.FontName, _config.FontSize);
             _right = new BarSection(true, rightPanel, right, _monitor, context,
-                _config.Colors.GetForgroundColorFromDesign(_widgetForegroundDefault), _config.Colors.GetBackgroundColorFromDesign(_widgetBackgroundDefault), _config.FontName, _config.FontSize);
+                _config.Colors.GetForgroundColor(DesignResources.ForegroundColorDefault), _config.Colors.GetBackgroundColor(DesignResources.BackgroundColorDefault), _config.FontName, _config.FontSize);
         }
 
         private System.Drawing.Color ColorToColor(Color color)

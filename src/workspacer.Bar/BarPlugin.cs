@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace workspacer.Bar
@@ -35,11 +32,31 @@ namespace workspacer.Bar
                     var left = config.LeftWidgets();
                     var right = config.RightWidgets();
 
+                    PassConfig(left, config);
+                    PassConfig(right, config);
+
                     bar.Initialize(left, right, context);
 
                     bar.Show();
                     bars.Add(bar);
                 }
+            }
+        }
+
+        private static void PassConfig(IEnumerable<IBarWidget> widgets, BarPluginConfig config)
+        {
+            //Color Config
+            foreach (var widget in widgets)
+            {
+                var newConfig = widget.Colors;
+                foreach (var configColor in config.Colors)
+                {
+                    if (!newConfig.ContainsKey(configColor.Key))
+                    {
+                        newConfig.Add(configColor.Key, configColor.Value);
+                    }
+                }
+                widget.Colors = newConfig;
             }
         }
 

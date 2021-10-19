@@ -10,7 +10,7 @@ namespace workspacer.Bar
         public int BarHeight { get; set; } = 30;
         public string FontName { get; set; } = "Consolas";
         public int FontSize { get; set; } = 16;
-        public Dictionary<string, Color> Colors { get; set; }
+        public Dictionary<string, Color> Colors { get; set; } = new Dictionary<string, Color>();
 
         public Func<IBarWidget[]> LeftWidgets { get; set; } = () => 
             new IBarWidget[] { new WorkspaceWidget(), new TextWidget(": "), new TitleWidget() };

@@ -4,9 +4,7 @@ namespace workspacer.Bar.Widgets
 {
     public class ActiveLayoutWidget : BarWidgetBase
     {
-      
         private Timer _timer;
-
         public ActiveLayoutWidget() { }
 
         public override IBarWidgetPart[] GetParts()

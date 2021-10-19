@@ -2,7 +2,6 @@
 {
     public class TextWidget : BarWidgetBase
     {
-        
         private string _text;
 
         public TextWidget(string text)

@@ -2,50 +2,47 @@
 
 namespace workspacer.Bar
 {
-    public static class BarDesign
+    public static class BarResources
     {
-        public static string BACKGROUND_FILL_KEY = "workspacer.Bar.BackgroundFill";
+        public static string BackgroundFillColorKey = "workspacer.Bar.BackgroundFillColor";
+        internal static readonly Color BackgroundFillColorDefault = Color.Black;
     }
 
-    public static class Design
+    public static class DesignResources
     {
-        public static string FOREGROUND_KEY = "workspacer.Bar.Foreground";
-        public static string BACKGROUND_KEY = "workspacer.Bar.Background";
+        public static string ForegroundColorKey = "workspacer.Bar.ForegroundColor";
+        public static string BackgroundColorKey = "workspacer.Bar.BackgroundColor";
+
+        internal static readonly Color BackgroundColorDefault = Color.White;
+        internal static readonly Color ForegroundColorDefault = Color.Black;
     }
 
     public static class DesignUtils
     {
-        public static Color GetForgroundColorFromDesign(this Dictionary<string, Color> stack, Color defaultColor = null)
+        public static Color GetForgroundColor(this IDictionary<string, Color> stack, Color defaultColor = null)
         {
-            Color col = defaultColor;
-            if (stack.ContainsKey(Design.FOREGROUND_KEY))
-            {
-                col = stack[Design.FOREGROUND_KEY];
-            }
-
-            return col;
+            return GetColorByKey(stack, DesignResources.ForegroundColorKey, defaultColor ?? DesignResources.ForegroundColorDefault);
         }
 
-        public static Color GetBackgroundColorFromDesign(this Dictionary<string, Color> stack, Color defaultColor = null)
+        public static Color GetBackgroundColor(this IDictionary<string, Color> stack, Color defaultColor = null)
         {
-            Color col = defaultColor;
-            if (stack.ContainsKey(Design.BACKGROUND_KEY))
-            {
-                col = stack[Design.BACKGROUND_KEY];
-            }
-
-            return col;
+            return GetColorByKey(stack, DesignResources.BackgroundColorKey, defaultColor ?? DesignResources.BackgroundColorDefault);
         }
 
-        public static Color GetColorFromDesign(this Dictionary<string, Color> stack, string key, Color defaulColor = null)
+        public static Color GetColorByKey(this IDictionary<string, Color> stack, string key, Color defaulColor = null)
         {
-            Color col = defaulColor ?? null;
-            if (stack.ContainsKey(key))
+            return GetResourceByKey(stack, key, defaulColor);
+        }
+
+        public static T GetResourceByKey<T>(this IDictionary<string, T> stack, string key, T defaulValue = null) where T : class
+        {
+            var def = defaulValue ?? default(T);
+            if (stack != null && stack.ContainsKey(key))
             {
-                col = stack[key];
+                def = stack[key];
             }
 
-            return col;
+            return def;
         }
 
         public static System.Drawing.Color ColorToColor(Color color)

@@ -6,6 +6,6 @@ namespace workspacer.Bar
     {
         void Initialize(IBarWidgetContext context);
         IBarWidgetPart[] GetParts();
-        public Dictionary<string, Color> Colors { get; set; }
+        public IDictionary<string, Color> Colors { get; set; }
     }
 }

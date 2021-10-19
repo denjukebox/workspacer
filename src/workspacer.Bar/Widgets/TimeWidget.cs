@@ -5,7 +5,6 @@ namespace workspacer.Bar.Widgets
 {
     public class TimeWidget : BarWidgetBase
     {
-        
         private Timer _timer;
         private int _interval;
         private string _format;

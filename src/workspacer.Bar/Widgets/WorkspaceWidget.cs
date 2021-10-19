@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace workspacer.Bar.Widgets
 {
-    public static class WorkspaceWidgetDesign
+    public static class WorkspaceWidgetResources
     {
-        public const string WORKSPACEHASFOCUSCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceHasFocusColor";
-        public const string WORKSPACEEMPTYCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceEmptyColor";
-        public const string WORKSPACEFILLEDCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceFilledColor";
+        public const string WorkspaceHasFocusColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceHasFocusColor";
+        public const string WorkspaceEmptyColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceEmptyColor";
+        public const string WorkspaceFilledColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceFilledColor";
 
-        public const string WORKSPACEINDICATINGBACKCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceIndicatingBackColor";
-        public const string WORKSPACEBACKCOLOR_KEY = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceBackColor";
+        public const string WorkspaceIndicatingBackColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceIndicatingBackColor";
+        public const string WorkspaceBackColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceBackColor";
+
+        internal static readonly Color WorkspaceHasFocusColorDefault = Color.Red;
+        internal static readonly Color WorkspaceEmptyColorDefault = Color.Gray;
+        internal static readonly Color WorkspaceFilledColorDefault = Color.White;
+        internal static readonly Color WorkspaceIndicatingBackColorDefault = Color.Teal;
     }
 
     public class WorkspaceWidget : BarWidgetBase
     {
-        private Color _workspaceHasFocusColor = Color.Red;
-        private Color _workspaceEmptyColor = Color.Gray;
-        private Color _workspaceFilledColor = Color.White;
-        private Color _workspaceIndicatingBackColor = Color.Teal;
-
         public int BlinkPeriod { get; set; } = 1000;
 
         private Timer _blinkTimer;
@@ -79,7 +75,7 @@ namespace workspacer.Bar.Widgets
         private IBarWidgetPart CreatePart(IWorkspace workspace, int index)
         {
             var backColor = WorkspaceIsIndicating(workspace) ? 
-                Colors.GetColorFromDesign(WorkspaceWidgetDesign.WORKSPACEINDICATINGBACKCOLOR_KEY, _workspaceIndicatingBackColor) : null;
+                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceIndicatingBackColorKey, WorkspaceWidgetResources.WorkspaceIndicatingBackColorDefault) : null;
 
             return Part(GetDisplayName(workspace, index), GetDisplayColor(workspace, index), backColor, () =>
             {
@@ -106,13 +102,13 @@ namespace workspacer.Bar.Widgets
             var monitor = Context.WorkspaceContainer.GetCurrentMonitorForWorkspace(workspace);
             if (Context.Monitor == monitor)
             {
-                return Colors.GetColorFromDesign(WorkspaceWidgetDesign.WORKSPACEHASFOCUSCOLOR_KEY, _workspaceHasFocusColor) ;
+                return Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceHasFocusColorKey, WorkspaceWidgetResources.WorkspaceHasFocusColorDefault) ;
             }
 
             var hasWindows = workspace.ManagedWindows.Count != 0;
             return hasWindows ?
-                Colors.GetColorFromDesign(WorkspaceWidgetDesign.WORKSPACEFILLEDCOLOR_KEY, _workspaceFilledColor) :
-                Colors.GetColorFromDesign(WorkspaceWidgetDesign.WORKSPACEEMPTYCOLOR_KEY, _workspaceEmptyColor);
+                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceFilledColorKey, WorkspaceWidgetResources.WorkspaceFilledColorDefault) :
+                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceEmptyColorKey, WorkspaceWidgetResources.WorkspaceEmptyColorDefault);
         }
 
         private void BlinkIndicatingWorkspaces()
