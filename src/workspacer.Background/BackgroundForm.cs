@@ -53,10 +53,13 @@ namespace workspacer.Background
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             BackColor = System.Drawing.Color.Transparent;
 
+            StartPosition = FormStartPosition.Manual;
             FormBorderStyle = FormBorderStyle.None;
             ControlBox = false;
 
-            Location = new Point(monitor.X, monitor.Y);
+            Left = monitor.X;
+            Top = monitor.Y;
+
             Width = monitor.Width;
             Height = monitor.Height;
         }
@@ -131,7 +134,7 @@ namespace workspacer.Background
                 }
 
                 var color = System.Drawing.Color.FromArgb(255, parts.ElementAt(0), parts.ElementAt(1), parts.ElementAt(2));
-                e.Graphics.FillRectangle(new SolidBrush(color), _config.AssignedMonitor.X, _config.AssignedMonitor.Y, monitor.Width, monitor.Height);
+                e.Graphics.FillRectangle(new SolidBrush(color), 0, 0, monitor.Width, monitor.Height);
             }
             if(item.Type == BackgroundContentType.Image)
             {
@@ -147,7 +150,7 @@ namespace workspacer.Background
                     return;
                 }
 
-                e.Graphics.DrawImage(image, _config.AssignedMonitor.X, _config.AssignedMonitor.Y, monitor.Width, monitor.Height);
+                e.Graphics.DrawImage(image, 0, 0, monitor.Width, monitor.Height);
             }
         }
 
