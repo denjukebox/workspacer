@@ -19,9 +19,25 @@ namespace workspacer.ActionMenu
         public string FontName { get; set; } = "Consolas";
         public int FontSize { get; set; } = 16;
 
-        public IMatcher Matcher { get; set; } = new OrMatcher(new PrefixMatcher(), new ContiguousMatcher());
+        private Dictionary<string, Color> _colors;
+        public Dictionary<string, Color> Colors 
+        { 
+            get 
+            { 
+                if(_colors == null)
+                {
+                    return WorkspacerResources.GlobalColors;
+                }
 
-        public Color Background { get; set; } = Color.Black;
-        public Color Foreground { get; set; } = Color.White;
+                return _colors;
+            }
+            set 
+            {
+                _colors = value;
+                WorkspacerResources.GlobalColors.MergeResourceDictionaries(_colors);
+            } 
+        }
+
+        public IMatcher Matcher { get; set; } = new OrMatcher(new PrefixMatcher(), new ContiguousMatcher());
     }
 }

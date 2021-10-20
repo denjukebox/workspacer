@@ -6,12 +6,12 @@ namespace workspacer.Bar.Widgets
 {
     public static class WorkspaceWidgetResources
     {
-        public const string WorkspaceHasFocusColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceHasFocusColor";
-        public const string WorkspaceEmptyColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceEmptyColor";
-        public const string WorkspaceFilledColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceFilledColor";
+        public const string WorkspaceHasFocusColor = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceHasFocusColor";
+        public const string WorkspaceEmptyColor = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceEmptyColor";
+        public const string WorkspaceFilledColor = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceFilledColor";
 
-        public const string WorkspaceIndicatingBackColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceIndicatingBackColor";
-        public const string WorkspaceBackColorKey = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceBackColor";
+        public const string WorkspaceIndicatingBackColor = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceIndicatingBackColor";
+        public const string WorkspaceBackColor = "workspacer.Bar.Widgets.WorkspaceWidget.WorkspaceBackColor";
 
         internal static readonly Color WorkspaceHasFocusColorDefault = Color.Red;
         internal static readonly Color WorkspaceEmptyColorDefault = Color.Gray;
@@ -75,7 +75,7 @@ namespace workspacer.Bar.Widgets
         private IBarWidgetPart CreatePart(IWorkspace workspace, int index)
         {
             var backColor = WorkspaceIsIndicating(workspace) ? 
-                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceIndicatingBackColorKey, WorkspaceWidgetResources.WorkspaceIndicatingBackColorDefault) : null;
+                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceIndicatingBackColor, WorkspaceWidgetResources.WorkspaceIndicatingBackColorDefault) : null;
 
             return Part(GetDisplayName(workspace, index), GetDisplayColor(workspace, index), backColor, () =>
             {
@@ -102,13 +102,13 @@ namespace workspacer.Bar.Widgets
             var monitor = Context.WorkspaceContainer.GetCurrentMonitorForWorkspace(workspace);
             if (Context.Monitor == monitor)
             {
-                return Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceHasFocusColorKey, WorkspaceWidgetResources.WorkspaceHasFocusColorDefault) ;
+                return Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceHasFocusColor, WorkspaceWidgetResources.WorkspaceHasFocusColorDefault) ;
             }
 
             var hasWindows = workspace.ManagedWindows.Count != 0;
             return hasWindows ?
-                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceFilledColorKey, WorkspaceWidgetResources.WorkspaceFilledColorDefault) :
-                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceEmptyColorKey, WorkspaceWidgetResources.WorkspaceEmptyColorDefault);
+                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceFilledColor, WorkspaceWidgetResources.WorkspaceFilledColorDefault) :
+                Colors.GetColorByKey(WorkspaceWidgetResources.WorkspaceEmptyColor, WorkspaceWidgetResources.WorkspaceEmptyColorDefault);
         }
 
         private void BlinkIndicatingWorkspaces()

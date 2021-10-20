@@ -50,12 +50,12 @@ namespace workspacer.ActionMenu
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
             this.label.Text = "";
-            this.label.BackColor = ColorToColor(config.Background);
-            this.label.ForeColor = ColorToColor(config.Foreground);
-            this.textBox.BackColor = ColorToColor(config.Background);
-            this.textBox.ForeColor = ColorToColor(config.Foreground);
-            this.listBox.BackColor = ColorToColor(config.Background);
-            this.listBox.ForeColor = ColorToColor(config.Foreground);
+            this.label.BackColor = config.Colors.GetBackgroundColor().ToDrawingColor();
+            this.label.ForeColor = config.Colors.GetForgroundColor().ToDrawingColor();
+            this.textBox.BackColor = config.Colors.GetBackgroundColor().ToDrawingColor();
+            this.textBox.ForeColor = config.Colors.GetForgroundColor().ToDrawingColor();
+            this.listBox.BackColor = config.Colors.GetBackgroundColor().ToDrawingColor();
+            this.listBox.ForeColor = config.Colors.GetForgroundColor().ToDrawingColor();
 
             this.textBox.AutoSize = true;
             this.listBox.AutoSize = true;
@@ -87,11 +87,6 @@ namespace workspacer.ActionMenu
             };
             _freeform = true;
             ApplyFilter();
-        }
-
-        private System.Drawing.Color ColorToColor(Color color)
-        {
-            return System.Drawing.Color.FromArgb(color.R, color.G, color.B);
         }
 
         private void OnKeyPress(object sender, KeyPressEventArgs e)

@@ -5,7 +5,7 @@ namespace workspacer.Bar.Widgets
 {
     public static class TitleWidgetResources
     {
-        public const string MonitorHasFocusColorKey = "workspacer.Bar.Widgets.TitleWidget.MonitorHasFocusColor";
+        public const string MonitorHasFocusColor = "workspacer.Bar.Widgets.TitleWidget.MonitorHasFocusColor";
         internal static readonly Color MonitorHasFocusColorDefault = Color.Yellow;
     }
 
@@ -19,7 +19,7 @@ namespace workspacer.Bar.Widgets
             var window = GetWindow();
             var isFocusedMonitor = Context.MonitorContainer.FocusedMonitor == Context.Monitor;
             var multipleMonitors = Context.MonitorContainer.NumMonitors > 1;
-            var color = isFocusedMonitor && multipleMonitors ? Colors.GetColorByKey(TitleWidgetResources.MonitorHasFocusColorKey, TitleWidgetResources.MonitorHasFocusColorDefault) : null;
+            var color = isFocusedMonitor && multipleMonitors ? Colors.GetColorByKey(TitleWidgetResources.MonitorHasFocusColor, TitleWidgetResources.MonitorHasFocusColorDefault) : null;
 
             if (window != null)
             {

@@ -1,28 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace workspacer
 {
     public class Color : IEquatable<Color>
     {
+        public byte A { get; }
         public byte R { get; }
         public byte G { get; }
         public byte B { get; }
 
-        public Color(byte r, byte g, byte b)
+        public Color(byte r, byte g, byte b, byte a = 255)
         {
-            R = r; G = g; B = b;
+            A = a; R = r; G = g; B = b;
         }
 
-        public Color(int r, int g, int b)
+        public Color(int r, int g, int b, int a = 255)
         {
+            ValidateRange(a, nameof(a));
             ValidateRange(r, nameof(r));
             ValidateRange(g, nameof(g));
             ValidateRange(b, nameof(b));
 
+            A = (byte)a;
             R = (byte)r;
             G = (byte)g;
             B = (byte)b;
@@ -72,6 +71,11 @@ namespace workspacer
         {
             int hash = (((R * 256) + B) * 256) + G;
             return hash;
+        }
+
+        public System.Drawing.Color ToDrawingColor(byte? alphaOverride = null)
+        {
+            return System.Drawing.Color.FromArgb(alphaOverride ?? A, R, G, B);
         }
     }
 }

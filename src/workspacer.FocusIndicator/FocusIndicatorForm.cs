@@ -79,7 +79,7 @@ namespace workspacer.FocusIndicator
         {
             base.OnPaint(e);
 
-            var borderColor = ColorToColor(_config.BorderColor);
+            var borderColor = _config.Colors.GetColorByKey(FocusIndicatorResources.BorderColor, FocusIndicatorResources.BorderColorDefault).ToDrawingColor();
             var pen = new Pen(borderColor, _config.BorderSize);
 
             var height = this.Height;
@@ -89,11 +89,6 @@ namespace workspacer.FocusIndicator
             e.Graphics.DrawLine(pen, new Point(0, 0), new Point(width, 0));
             e.Graphics.DrawLine(pen, new Point(0, height), new Point(width, height));
             e.Graphics.DrawLine(pen, new Point(width, 0), new Point(width, height));
-        }
-
-        private System.Drawing.Color ColorToColor(Color color)
-        {
-            return System.Drawing.Color.FromArgb(color.R, color.G, color.B);
         }
     }
 }

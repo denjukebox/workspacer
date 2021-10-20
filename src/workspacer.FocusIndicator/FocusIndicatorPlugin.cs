@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace workspacer.FocusIndicator
 {
+    public static class FocusIndicatorResources
+    {
+        public static string BorderColor = "workspacer.FocusIndicator.BorderColor";
+        internal static readonly Color BorderColorDefault = Color.Black;
+    }
+    
     public class FocusIndicatorPlugin : IPlugin
     {
         private IConfigContext _context;

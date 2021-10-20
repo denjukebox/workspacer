@@ -5,6 +5,12 @@ using System.Windows.Forms;
 
 namespace workspacer.Bar
 {
+    public static class BarPluginResources
+    {
+        public static string BackgroundFillColor = "workspacer.Bar.BackgroundFillColor";
+        internal static readonly Color BackgroundFillColorDefault = Color.Black;
+    }
+
     public class BarPlugin : IPlugin
     {
         private BarPluginConfig _config;
@@ -48,15 +54,7 @@ namespace workspacer.Bar
             //Color Config
             foreach (var widget in widgets)
             {
-                var newConfig = widget.Colors;
-                foreach (var configColor in config.Colors)
-                {
-                    if (!newConfig.ContainsKey(configColor.Key))
-                    {
-                        newConfig.Add(configColor.Key, configColor.Value);
-                    }
-                }
-                widget.Colors = newConfig;
+                config.Colors.MergeResourceDictionaries(widget.Colors);
             }
         }
 

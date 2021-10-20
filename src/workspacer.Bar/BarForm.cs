@@ -1,8 +1,5 @@
 using System;
 using System.Drawing;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -31,7 +28,7 @@ namespace workspacer.Bar
             this.ControlBox = false;
             this.FormBorderStyle = FormBorderStyle.None;
 
-            this.BackColor = ColorToColor(config.Colors.GetColorByKey(BarResources.BackgroundFillColorKey, BarResources.BackgroundFillColorDefault));
+            this.BackColor = config.Colors.GetColorByKey(BarPluginResources.BackgroundFillColor, BarPluginResources.BackgroundFillColorDefault).ToDrawingColor();
 
             this.Load += OnLoad;
 
@@ -52,14 +49,9 @@ namespace workspacer.Bar
         public void Initialize(IBarWidget[] left, IBarWidget[] right, IConfigContext context)
         {
             _left = new BarSection(false, leftPanel, left, _monitor, context,
-                _config.Colors.GetForgroundColor(DesignResources.ForegroundColorDefault), _config.Colors.GetBackgroundColor(DesignResources.BackgroundColorDefault), _config.FontName, _config.FontSize);
+                _config.Colors.GetForgroundColor(), _config.Colors.GetBackgroundColor(), _config.FontName, _config.FontSize);
             _right = new BarSection(true, rightPanel, right, _monitor, context,
-                _config.Colors.GetForgroundColor(DesignResources.ForegroundColorDefault), _config.Colors.GetBackgroundColor(DesignResources.BackgroundColorDefault), _config.FontName, _config.FontSize);
-        }
-
-        private System.Drawing.Color ColorToColor(Color color)
-        {
-            return System.Drawing.Color.FromArgb(color.R, color.G, color.B);
+                _config.Colors.GetForgroundColor(), _config.Colors.GetBackgroundColor(), _config.FontName, _config.FontSize);
         }
 
         private void OnLoad(object sender, EventArgs e)
