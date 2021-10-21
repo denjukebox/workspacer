@@ -39,7 +39,7 @@ namespace workspacer.Bar
 
         protected IBarWidgetPart Part(string text, Color fore = null, Color back = null, Action partClicked = null, string fontname = null, string leftPadding = "", string rightPadding = "")
         {
-            return new BarWidgetPart()
+            return new BarWidgetLabelPart()
             {
                 Text = text,
                 ForegroundColor = fore,
