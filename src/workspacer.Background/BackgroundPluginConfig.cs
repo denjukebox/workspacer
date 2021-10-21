@@ -34,27 +34,37 @@ namespace workspacer.Background
     {
         public List<BackgroundItem> Backgrounds { get; set; }
         public TimeSpan Interval { get; set; }
+        public bool RandomOrder { get; set; }
 
         private int _currentIndex = 0;
+        private Random _random = new Random();
 
-        public MultiBackgroundPluginConfig(IEnumerable<BackgroundItem> backgrounds, TimeSpan interval, IMonitor monitor = null) : base(monitor)
+        public MultiBackgroundPluginConfig(IEnumerable<BackgroundItem> backgrounds, IMonitor monitor, TimeSpan interval, bool randomOrder) : base(monitor)
         {
             Interval = interval;
             Backgrounds = backgrounds.ToList();
+            RandomOrder = randomOrder;
         }
 
         public BackgroundItem GetNext()
         {
-            if (_currentIndex == Backgrounds.Count() - 1)
+            if (RandomOrder)
             {
-                _currentIndex = 0;
+                return Backgrounds.ElementAt(_random.Next(0, Backgrounds.Count() - 1));
             }
             else
             {
-                _currentIndex++;
-            }
+                if (_currentIndex == Backgrounds.Count() - 1)
+                {
+                    _currentIndex = 0;
+                }
+                else
+                {
+                    _currentIndex++;
+                }
 
-            return Backgrounds.ElementAt(_currentIndex);
+                return Backgrounds.ElementAt(_currentIndex);
+            }
         }
     }
 }
