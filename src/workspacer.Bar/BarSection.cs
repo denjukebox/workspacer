@@ -79,6 +79,11 @@ namespace workspacer.Bar
                     {
                         var part = parts[pIndex];
                         var control = widgetPanel.Controls[pIndex];
+                        if (part is IBarWidgetPartWithDesign)
+                        {
+                            UpdatePart(part as IBarWidgetPartWithDesign);
+                        }
+
                         part.UpdateControl(control);
 
                         if (part is IBarWidgetPartClickAction)
@@ -99,6 +104,26 @@ namespace workspacer.Bar
             }
         }
 
+        private void UpdatePart(IBarWidgetPartWithDesign widget)
+        {
+            if (widget.BackgroundColor == null)
+            {
+                widget.BackgroundColor = _defaultBack;
+            }
+            if (widget.ForegroundColor == null)
+            {
+                widget.ForegroundColor = _defaultFore;
+            }
+            if (string.IsNullOrEmpty(widget.FontName))
+            {
+                widget.FontName = _fontName;
+            }
+            if (widget.FontSize == 0)
+            {
+                widget.FontSize = _fontSize;
+            }
+        }
+
         private void EqualizeControls(FlowLayoutPanel pannel, IBarWidgetPart[] parts)
         {
             var partCount = parts.Count();
@@ -106,6 +131,7 @@ namespace workspacer.Bar
             {
                 while (pannel.Controls.Count < partCount)
                 {
+                    UpdatePart(parts[0] as IBarWidgetPartWithDesign);
                     var control = parts[0].CreateControl();
                     pannel.Controls.Add(control);
                     if (parts[0] is IBarWidgetPartClickAction)
@@ -127,58 +153,6 @@ namespace workspacer.Bar
             }
         }
 
-        //private void SetAsControl(FlowLayoutPanel panel, IBarWidgetControlPart part)
-        //{
-        //    var control = part.GetControl();
-        //    panel.Controls.Add(control);
-        //}
-
-        //private void SetAsLabel(FlowLayoutPanel panel, IBarWidgetLabelPart part)
-        //{
-        //    var label = new Label
-        //    {
-        //        Font = CreateFont(_fontName, _fontSize),
-        //        Padding = new Padding(0),
-        //        Margin = new Padding(0),
-        //        AutoSize = true
-        //    };
-
-        //    label.Click += (s, e) =>
-        //    {
-        //        if (_clickedHandlers.ContainsKey(label))
-        //        {
-        //            _clickedHandlers[label]();
-        //        }
-        //    };
-
-        //    label.Text = part.Text;
-
-        //    var foregroundColor = ColorToColor(part.ForegroundColor ?? _defaultFore);
-        //    if (label.ForeColor != foregroundColor)
-        //    {
-        //        label.ForeColor = foregroundColor;
-        //    }
-
-        //    var backgroundColor = ColorToColor(part.BackgroundColor ?? _defaultBack);
-        //    if (label.BackColor != backgroundColor)
-        //    {
-        //        label.BackColor = backgroundColor;
-        //    }
-
-        //    label.Font = CreateFont(string.IsNullOrEmpty(part.FontName) ? _fontName : part.FontName, _fontSize);
-
-        //    //if (part.PartClicked != null)
-        //    //{
-        //    //    _clickedHandlers[label] = part.PartClicked;
-        //    //}
-        //    //else
-        //    //{
-        //    //    _clickedHandlers.Remove(label);
-        //    //}
-
-        //    panel.Controls.Add(label);
-        //}
-
         public void MarkDirty()
         {
             _dirty = true;
@@ -188,12 +162,6 @@ namespace workspacer.Bar
         {
             return System.Drawing.Color.FromArgb(color.R, color.G, color.B);
         }
-
-        private Font CreateFont(string name, float size)
-        {
-            return new Font(name, size, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-        }
-
 
         private void InitializeWidgets(IEnumerable<IBarWidget> widgets, IBarWidgetContext context)
         {

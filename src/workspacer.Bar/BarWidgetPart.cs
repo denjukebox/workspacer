@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace workspacer.Bar
 {
-    public class BarWidgetLabelPart : IBarWidgetPart, IBarWidgetPartClickAction
+    public class BarWidgetLabelPart : IBarWidgetPart, IBarWidgetPartWithDesign, IBarWidgetPartClickAction
     {
         public string Text { get; set; }
         public string LeftPadding { get; set; }
@@ -17,12 +17,12 @@ namespace workspacer.Bar
         public Color BackgroundColor { get; set; }
         public Action PartClicked { get; set; }
         public string FontName { get; set; }
+        public int FontSize { get; set; }
 
-        public Control CreateControl()
+        public virtual Control CreateControl()
         {
             var label = new Label
             {
-                Font = CreateFont(FontName, 15),
                 Padding = new Padding(0),
                 Margin = new Padding(0),
                 AutoSize = true
@@ -41,9 +41,9 @@ namespace workspacer.Bar
             return new Font(name, size, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
         }
 
-        public void UpdateControl(Control control)
+        public virtual void UpdateControl(Control control)
         {
-            control.Text = Text;
+            control.Text = LeftPadding + Text + RightPadding;
 
             var foregroundColor = ColorToColor(ForegroundColor ?? Color.White);
             if (control.ForeColor != foregroundColor)
@@ -57,7 +57,7 @@ namespace workspacer.Bar
                 control.BackColor = backgroundColor;
             }
 
-            control.Font = CreateFont(FontName, 15);
+            control.Font = CreateFont(FontName, FontSize);
         }
     }
 }

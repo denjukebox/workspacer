@@ -9,42 +9,54 @@ using System.Windows.Forms;
 
 namespace workspacer.Bar.Widgets
 {
-    public class TitleWidgetTitlePart : IBarWidgetPart
+    public class TitleWidgetTitlePart : BarWidgetLabelPart, IBarWidgetPart
     {
-        public string Text { get; set; }
+        public int Margin { get; set; }
         public string ProcessPath { get; set; }
-        public Control CreateControl()
+        public override Control CreateControl()
         {
             var panel = new FlowLayoutPanel
             {
                 AutoSize = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom,
                 Location = new Point(0, 0),
-                Margin = new Padding(0),
+                Margin = new Padding(Margin, 0, Margin, 0),
                 Size = new Size(50, 50),
                 FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = false
+                WrapContents = false,
+                ForeColor = ColorToColor(ForegroundColor),
+                BackColor = ColorToColor(BackgroundColor)
             };
 
-            var icon = new PictureBox
+            var pictureBox = new PictureBox
             {
                 Padding = new Padding(0),
                 Margin = new Padding(0),
-                AutoSize = true
+                Image = GetIcon(),
+                SizeMode = PictureBoxSizeMode.StretchImage
             };
 
-            panel.Controls.Add(icon);
+            panel.Controls.Add(pictureBox);
 
-            var label = new Label
-            {
-                Padding = new Padding(0),
-                Margin = new Padding(0),
-                AutoSize = true
-            };
-
+            var label = base.CreateControl();
             panel.Controls.Add(label);
 
             return panel;
+        }
+
+        public override void UpdateControl(Control control)
+        {
+            var panel = (FlowLayoutPanel)control;
+
+            var label = panel.Controls.OfType<Label>().ElementAt(0);
+            base.UpdateControl(label);
+
+            var size = label.ClientSize.Height;
+
+            var pictureBox = panel.Controls.OfType<PictureBox>().ElementAt(0);
+            pictureBox.Image = GetIcon();
+            pictureBox.Height = size;
+            pictureBox.Width = size;
         }
 
         private System.Drawing.Color ColorToColor(Color color)
@@ -52,31 +64,15 @@ namespace workspacer.Bar.Widgets
             return System.Drawing.Color.FromArgb(color.R, color.G, color.B);
         }
 
-        public void UpdateControl(Control control)
+        private Bitmap GetIcon()
         {
-            var panel = (FlowLayoutPanel)control;
-            var label = panel.Controls.OfType<Label>().ElementAt(0);
-
-            label.Text = Text;
-
-            var foregroundColor = ColorToColor(Color.White);
-            if (label.ForeColor != foregroundColor)
-            {
-                label.ForeColor = foregroundColor;
-            }
-
-            var backgroundColor = ColorToColor(Color.Black);
-            if (label.BackColor != backgroundColor)
-            {
-                label.BackColor = backgroundColor;
-            }
-
-            var _pictureBox = panel.Controls.OfType<PictureBox>().ElementAt(0);
             if (!string.IsNullOrEmpty(ProcessPath))
             {
                 var result = Icon.ExtractAssociatedIcon(ProcessPath);
-                _pictureBox.Image = Bitmap.FromHicon(result.Handle);
+                return Bitmap.FromHicon(result.Handle);
             }
+
+            return null;
         }
     }
 
@@ -95,30 +91,41 @@ namespace workspacer.Bar.Widgets
             var color = isFocusedMonitor && multipleMonitors ? MonitorHasFocusColor : null;
             if (window != null)
             {
-                return Parts(Part(window));
                 if (!IsShortTitle)
                 {
-                    return Parts(Part(window.Title, color, fontname: FontName));
+                    return Parts(Part(window, window.Title, color, fontname: FontName));
                 }
                 else
                 {
                     var shortTitle = GetShortTitle(window.Title);
-                    return Parts(Part(shortTitle, color, fontname: FontName));
+                    return Parts(Part(window, shortTitle, color, fontname: FontName));
                 }
             }
             else
             {
-                return Parts(Part(NoWindowMessage, color, fontname: FontName));
+                return Parts(Part(null, NoWindowMessage, color, fontname: FontName));
             }
         }
 
-        protected IBarWidgetPart Part(IWindow window)
+        protected IBarWidgetPart Part(IWindow window, string windowTitle, Color fore = null, Color back = null, Action partClicked = null, string fontname = null)
         {
-            var process = Process.GetProcessById(window.ProcessId);
+            var processPath = string.Empty;
+            if(window != null)
+            {
+                var process = Process.GetProcessById(window.ProcessId);
+                processPath = process?.MainModule?.FileName ?? string.Empty;
+            }
+
             return new TitleWidgetTitlePart()
             {
-                Text = window.Title,
-                ProcessPath = process?.MainModule?.FileName ?? string.Empty
+                Text = windowTitle,
+                ProcessPath = processPath,
+                ForegroundColor = fore,
+                BackgroundColor = back,
+                FontName = fontname,
+                PartClicked = partClicked,
+                FontSize = 10,
+                Margin = 5
             };
         }
 
