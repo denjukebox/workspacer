@@ -69,19 +69,22 @@ namespace workspacer.Bar
             }
 
             var widgets = _reverse ? _widgets.Reverse().ToArray() : _widgets;
-            for (int wIndex = 0; wIndex < widgets.Length; wIndex++)
+            for (var wIndex = 0; wIndex < widgets.Length; wIndex++)
             {
                 if (!widgets[wIndex].IsDirty())
                 {
                     continue;
                 }
 
-                var widgetPanel = _panel.Controls[wIndex];
+                var widgetPanel = (FlowLayoutPanel)_panel.Controls[wIndex];
                 var parts = widgets[wIndex].GetParts();
 
-                EqualizeControls((FlowLayoutPanel)widgetPanel, parts.Count());
-                foreach (var part in parts)
+                EqualizeControls(widgetPanel, parts);
+
+                for (var pIndex = 0; pIndex < parts.Length; pIndex++)
                 {
+                    var part = parts[pIndex];
+                    var control = widgetPanel.Controls[pIndex];
                     if (part is IBarWidgetPartWithDesign)
                     {
                         UpdatePart(part as IBarWidgetPartWithDesign);
@@ -106,7 +109,23 @@ namespace workspacer.Bar
             }
         }
 
-
+        private void UpdatePart(IBarWidgetPartWithDesign widget)
+        {
+            if (widget.BackgroundColor == null)
+            {
+                widget.BackgroundColor = _defaultBack;
+            }
+            if (widget.ForegroundColor == null)
+            {
+                widget.ForegroundColor = _defaultFore;
+            }
+            if (string.IsNullOrEmpty(widget.FontName))
+            {
+                widget.FontName = _fontName;
+            }
+            if (widget.FontSize == 0)
+            {
+                widget.FontSize = _fontSize;
             }
         }
 
@@ -134,7 +153,7 @@ namespace workspacer.Bar
 
                 while (pannel.Controls.Count > partCount)
                 {
-                    panel.Controls.RemoveAt(panel.Controls.Count - 1);
+                    pannel.Controls.RemoveAt(pannel.Controls.Count - 1);
                 }
             }
         }
