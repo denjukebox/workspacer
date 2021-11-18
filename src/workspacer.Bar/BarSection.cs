@@ -85,9 +85,9 @@ namespace workspacer.Bar
                 {
                     var part = parts[pIndex];
                     var control = widgetPanel.Controls[pIndex];
-                    if (part is IBarWidgetPartWithDesign)
+                    if (part is IBarWidgetPartDesign)
                     {
-                        UpdatePart(part as IBarWidgetPartWithDesign);
+                        UpdatePart(part as IBarWidgetPartDesign);
                     }
 
                     part.UpdateControl(control);
@@ -109,37 +109,40 @@ namespace workspacer.Bar
             }
         }
 
-        private void UpdatePart(IBarWidgetPartWithDesign widget)
+        private void UpdatePart(IBarWidgetPartDesign part)
         {
-            if (widget.BackgroundColor == null)
+            if (part.BackgroundColor == null)
             {
-                widget.BackgroundColor = _defaultBack;
+                part.BackgroundColor = _defaultBack;
             }
-            if (widget.ForegroundColor == null)
+
+            if (part.ForegroundColor == null)
             {
-                widget.ForegroundColor = _defaultFore;
+                part.ForegroundColor = _defaultFore;
             }
-            if (string.IsNullOrEmpty(widget.FontName))
+
+            if (string.IsNullOrEmpty(part.FontName))
             {
-                widget.FontName = _fontName;
+                part.FontName = _fontName;
             }
-            if (widget.FontSize == 0)
+
+            if (part.FontSize == 0)
             {
-                widget.FontSize = _fontSize;
+                part.FontSize = _fontSize;
             }
         }
 
         private void EqualizeControls(FlowLayoutPanel pannel, IBarWidgetPart[] parts)
         {
             var partCount = parts.Count();
+            var rootPart = parts.FirstOrDefault();
             if (pannel.Controls.Count != partCount)
             {
                 while (pannel.Controls.Count < partCount)
                 {
-                    UpdatePart(parts[0] as IBarWidgetPartWithDesign);
-                    var control = parts[0].CreateControl();
+                    var control = rootPart?.CreateControl();
                     pannel.Controls.Add(control);
-                    if (parts[0] is IBarWidgetPartClickAction)
+                    if (rootPart is IBarWidgetPartClickAction && control != null)
                     {
                         control.Click += (s, e) =>
                         {

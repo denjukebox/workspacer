@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace workspacer.Bar
 {
-    public interface IBarWidgetPartWithDesign
+    public interface IBarWidgetPartDesign
     {
         public Color ForegroundColor { get; set; }
         public Color BackgroundColor { get; set; }

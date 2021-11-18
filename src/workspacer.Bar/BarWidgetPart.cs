@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace workspacer.Bar
 {
-    public class BarWidgetLabelPart : IBarWidgetPart, IBarWidgetPartWithDesign, IBarWidgetPartClickAction
+    public class BarWidgetLabelPart : IBarWidgetPart, IBarWidgetPartDesign, IBarWidgetPartClickAction
     {
         public string Text { get; set; }
         public string LeftPadding { get; set; }
