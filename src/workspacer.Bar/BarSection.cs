@@ -19,7 +19,6 @@ namespace workspacer.Bar
         private Color _defaultBack;
 
         private bool _reverse;
-        private bool _dirty;
         private IBarWidgetContext _context;
 
         private IDictionary<Control, Action> _clickedHandlers;
@@ -33,7 +32,6 @@ namespace workspacer.Bar
             _configContext = context;
             _fontName = fontName;
             _fontSize = fontSize;
-            _dirty = true;
             _reverse = reverse;
             _defaultFore = defaultFore;
             _defaultBack = defaultBack;
@@ -65,62 +63,50 @@ namespace workspacer.Bar
 
         public void Draw()
         {
-            if (_dirty)
+            if (!_widgets.Any(w => w.IsDirty()))
             {
-                var widgets = _reverse ? _widgets.Reverse().ToArray() : _widgets;
-                for (var wIndex = 0; wIndex < widgets.Length; wIndex++)
+                return;
+            }
+
+            var widgets = _reverse ? _widgets.Reverse().ToArray() : _widgets;
+            for (int wIndex = 0; wIndex < widgets.Length; wIndex++)
+            {
+                if (!widgets[wIndex].IsDirty())
                 {
-                    var widgetPanel = (FlowLayoutPanel)_panel.Controls[wIndex];
-                    var parts = widgets[wIndex].GetParts();
+                    continue;
+                }
 
-                    EqualizeControls(widgetPanel, parts);
+                var widgetPanel = _panel.Controls[wIndex];
+                var parts = widgets[wIndex].GetParts();
 
-                    for (var pIndex = 0; pIndex < parts.Length; pIndex++)
+                EqualizeControls((FlowLayoutPanel)widgetPanel, parts.Count());
+                foreach (var part in parts)
+                {
+                    if (part is IBarWidgetPartWithDesign)
                     {
-                        var part = parts[pIndex];
-                        var control = widgetPanel.Controls[pIndex];
-                        if (part is IBarWidgetPartWithDesign)
-                        {
-                            UpdatePart(part as IBarWidgetPartWithDesign);
-                        }
-
-                        part.UpdateControl(control);
-
-                        if (part is IBarWidgetPartClickAction)
-                        {
-                            if (((IBarWidgetPartClickAction)part).PartClicked != null)
-                            {
-                                _clickedHandlers[control] = ((IBarWidgetPartClickAction)part).PartClicked;
-                            }
-                            else
-                            {
-                                _clickedHandlers.Remove(control);
-                            }
-                        }
+                        UpdatePart(part as IBarWidgetPartWithDesign);
                     }
 
-                    _dirty = false;
+                    part.UpdateControl(control);
+
+                    if (part is IBarWidgetPartClickAction)
+                    {
+                        if (((IBarWidgetPartClickAction)part).PartClicked != null)
+                        {
+                            _clickedHandlers[control] = ((IBarWidgetPartClickAction)part).PartClicked;
+                        }
+                        else
+                        {
+                            _clickedHandlers.Remove(control);
+                        }
+                    }
                 }
+
+                widgets[wIndex].MarkClean();
             }
         }
 
-        private void UpdatePart(IBarWidgetPartWithDesign widget)
-        {
-            if (widget.BackgroundColor == null)
-            {
-                widget.BackgroundColor = _defaultBack;
-            }
-            if (widget.ForegroundColor == null)
-            {
-                widget.ForegroundColor = _defaultFore;
-            }
-            if (string.IsNullOrEmpty(widget.FontName))
-            {
-                widget.FontName = _fontName;
-            }
-            if (widget.FontSize == 0)
-            {
-                widget.FontSize = _fontSize;
+
             }
         }
 
@@ -148,14 +134,9 @@ namespace workspacer.Bar
 
                 while (pannel.Controls.Count > partCount)
                 {
-                    pannel.Controls.RemoveAt(0);
+                    panel.Controls.RemoveAt(panel.Controls.Count - 1);
                 }
             }
-        }
-
-        public void MarkDirty()
-        {
-            _dirty = true;
         }
 
         private System.Drawing.Color ColorToColor(Color color)
